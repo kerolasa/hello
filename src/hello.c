@@ -40,7 +40,7 @@ typedef enum
 /* Forward declarations.  */
 static void print_help (void);
 static void print_version (void);
-static void print_box (wchar_t * mb_greeting);
+static void print_box (const wchar_t *mb_greeting);
 static void print_frame (const size_t len);
 
 int
@@ -129,52 +129,80 @@ main (int argc, char *argv[])
 
   exit (EXIT_SUCCESS);
 }
-
 
+
+/* Wide character version of the fwrite().  */
+
+static size_t
+fwwrite (FILE * file, const wchar_t * wcs, size_t size)
+{
+  for (size_t i = 0; i < size; i++)
+    {
+      if (fputwc (wcs[i], file) == WEOF)
+        {
+          return i;
+        }
+    }
+  return size;
+}
+
+
 /* New format message in box.  */
 
-void
-print_box (wchar_t * greeting)
+static void
+print_box (const wchar_t *greeting)
 {
-  wchar_t *ignored;
-  size_t longest_line = 0;
+  size_t longest_line = 0, i;
 
   struct parts
   {
-    wchar_t *str;
-    size_t len;
+    const wchar_t *str;
+    size_t chars;
+    size_t width;
     struct parts *next;
   };
   struct parts *first, *p;
 
-  first = xmalloc (sizeof (struct parts));
+  first = xmalloc (sizeof *first);
+  first->str = greeting;
+  first->chars = 0;
+  first->width = 0;
   first->next = NULL;
   p = first;
 
-  p->str = wcstok (greeting, L"\n", &ignored);
-  p->len = wcslen (p->str);
-  while (p->str != NULL)
+  for (i = 0; *(greeting + i) != '\0'; i++)
     {
-      size_t i, len_tabs = 0;
-      for (i = 0; *(p->str + i) != '\0'; i++)
-	{
-	  if (*(p->str + i) == '\t')
-	    len_tabs += 8 - (len_tabs + 2) % 8;
-	  else
-	    len_tabs++;
-	}
-      p->len = len_tabs - i;
-      if (longest_line < len_tabs)
-	longest_line = len_tabs;
-      p->next = xmalloc (sizeof (struct parts));
-      p = p->next;
-      p->str = wcstok (NULL, L"\n", &ignored);
+      if (*(greeting + i) == '\n')
+        {
+          if (longest_line < p->width)
+            longest_line = p->width;
+          p->next = xcalloc (1, sizeof *p->next);
+          p = p->next;
+          p->str = greeting + i + 1;
+        }
+      else if (*(greeting + i) == '\t')
+        {
+          p->chars++;
+          p->width += 8 - (p->width + 2) % 8;
+        }
+      else
+        {
+          p->chars++;
+          p->width++;
+        }
     }
+  if (longest_line < p->width)
+    longest_line = p->width;
 
   print_frame (longest_line);
-  for (p = first; p->str != NULL; p = p->next)
+  for (p = first; p != NULL; p = p->next)
     {
-      wprintf (L"| %-*ls |\n", longest_line - p->len, p->str);
+      fputws (L"| ", stdout);
+      if (fwwrite (stdout, p->str, p->chars) != p->chars)
+        fprintf (stderr, _("%s: write error\n"), program_name);
+      if (p->width < longest_line)
+        wprintf (L"%*ls", longest_line - p->width, L"");
+      fputws (L" |\n", stdout);
       free (p);
     }
   print_frame (longest_line);
