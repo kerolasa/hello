@@ -234,9 +234,7 @@ world!}.
 Output @var{text} instead of the default greeting.
 
 @item --help
-@itemx -h
 @opindex --help
-@opindex -h
 Print an informative help message on standard output and exit
 successfully.
 
@@ -257,9 +255,7 @@ be mentioned (Hello doesn't have any).
 Output the traditional greeting message @samp{hello, world}.
 
 @item --version
-@itemx -v
 @opindex --version
-@opindex -v
 Print the version number and licensing information of Hello on
 standard output and then exit successfully.
 

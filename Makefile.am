@@ -48,7 +48,15 @@ EXTRA_DIST += $(man_MANS)
 CLEANFILES = $(man_MANS)
 
 hello.1: hello
-	$(HELP2MAN) --include=$(top_srcdir)/man/hello.x $(top_builddir)/hello -o $@
+	$(HELP2MAN) \
+		--source='$(PACKAGE_STRING)' \
+		--include=$(top_srcdir)/man/hello.x \
+		--output=$@-t \
+		$(top_builddir)/hello \
+	&& sed \
+		-e '/For complete documentation/d' \
+		$@-t > $@ \
+	&& rm -f $@-t
 
 TESTS = \
 	tests/greeting-1 \
@@ -60,6 +68,7 @@ TESTS = \
 EXTRA_DIST += $(TESTS)
 
 noinst_LIBRARIES =
+MAINTAINERCLEANFILES =
 MOSTLYCLEANFILES =
 MOSTLYCLEANDIRS =
 BUILT_SOURCES =
