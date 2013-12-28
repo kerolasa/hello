@@ -18,6 +18,8 @@
 
 #include <config.h>
 #include "system.h"
+#include "errno.h"
+#include "error.h"
 #include "progname.h"
 #include "propername.h"
 #include "xalloc.h"
@@ -87,17 +89,13 @@ main (int argc, char *argv[])
   if (optind < argc)
     {
       /* Print error message and exit.  */
-      fprintf (stderr, _("%s: extra operand: %s\n"), program_name,
-               argv[optind]);
+      error (0, 0, "%s: %s", _("extra operand"), argv[optind]);
       usage (EXIT_FAILURE);
     }
 
   len = mbsrtowcs(NULL, &greeting_msg, 0, NULL);
   if (len == (size_t)-1)
-    {
-      fprintf (stderr, _("%s: conversion to a multibyte string failed\n"), program_name);
-      exit (EXIT_FAILURE);
-    }
+    error (EXIT_FAILURE, errno, _("conversion to a multibyte string failed"));
   mb_greeting = xmalloc((len + 1) * sizeof(wchar_t));
   mbsrtowcs(mb_greeting, &greeting_msg, len + 1, NULL);
 
