@@ -111,3 +111,7 @@ Version 2.7 (28 March 2011)
 
 * There is now a `NEWS' file (this one), giving a history of
   user-visible changes.
+
+ Copyright (C) 1992-2019 Free Software Foundation, Inc.
+
+This file is distributed under the same license as the GNU hello package.

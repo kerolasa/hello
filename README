@@ -2,7 +2,7 @@ This is the README file for the GNU Hello distribution.
 Hello prints a friendly greeting.  It also serves as a sample GNU
 package, showing practices that may be useful for GNU projects.
 
-  Copyright (C) 1992-2017 Free Software Foundation, Inc.
+  Copyright (C) 1992-2019 Free Software Foundation, Inc.
 
   Copying and distribution of this file, with or without modification,
   are permitted in any medium without royalty provided the copyright

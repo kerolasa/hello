@@ -1,3 +1,9 @@
+Copyright (C) 1994-2019 Free Software Foundation, Inc.
+
+This file is distributed under the same license as the GNU hello package.
+
+--=-=-=
+
 To: Karl Eichwalder <ke@suse.de>
 Subject: The Evolution of a Programmer
 From: =?ISO-8859-1?Q?Fran=E7ois_Pinard?= <pinard@iro.umontreal.ca>

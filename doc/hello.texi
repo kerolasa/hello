@@ -15,7 +15,7 @@
 This manual is for GNU Hello (version @value{VERSION}, @value{UPDATED}),
 which prints a friendly greeting (and serves as an example GNU package).
 
-Copyright @copyright{} 1992-2017 Free Software Foundation, Inc.
+Copyright @copyright{} 1992-2019 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document

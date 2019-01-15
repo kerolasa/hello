@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-dnl Copyright (C) 2004-2017 Free Software Foundation, Inc.
+dnl Copyright (C) 2004-2019 Free Software Foundation, Inc.
 
 dnl This file is free software; as a special exception the author gives
 dnl unlimited permission to copy and/or distribute it, with or without
