@@ -24,7 +24,7 @@ AM_INIT_AUTOMAKE([
 ])
 
 dnl Minimum Autoconf version required.
-AC_PREREQ([2.62])
+AC_PREREQ([2.63])
 
 dnl Where to generate output; srcdir location.
 AC_CONFIG_HEADERS([config.h:config.in])dnl Keep filename to 8.3 for MS-DOS.
