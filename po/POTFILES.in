@@ -14,4 +14,5 @@ lib/error.c
 lib/getopt.c
 lib/closeout.c
 lib/quotearg.c
+lib/version-etc.c
 lib/xalloc-die.c

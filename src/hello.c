@@ -30,7 +30,18 @@
 #include "error.h"
 #include "gettext.h"
 #include "progname.h"
+#include "propername.h"
+#include "version-etc.h"
 #include "xalloc.h"
+
+/* The official name of this program (e.g., no 'g' prefix).  */
+#define PROGRAM_NAME "hello"
+
+#define AUTHORS \
+  proper_name ("Karl Berry"), \
+  proper_name ("Sami Kerola"), \
+  proper_name ("Jim Meyering"), \
+  proper_name ("Reuben Thomas")
 
 /* Forward declarations.  */
 static _Noreturn void print_help (FILE *restrict out);
@@ -82,7 +93,7 @@ main (int argc, char *argv[])
       {
 	/* --help and --version exit immediately, per GNU coding standards.  */
       case OPT_VERSION:
-	print_version ();
+	version_etc (stdout, PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION, AUTHORS, (char *) NULL);
 	exit (EXIT_SUCCESS);
 	break;
       case 'g':
@@ -143,12 +154,7 @@ print_help (FILE *restrict out)
   fputs ("\n", out);
   fputs (_("      --help     display this help and exit\n"), out);
   fputs (_("      --version  output version information and exit\n"), out);
-  fputs ("\n", out);
-  /* TRANSLATORS: --help output 4+ (reports)
-     TRANSLATORS: the placeholder indicates the bug-reporting address
-     for this application.
-     no-wrap */
-  fprintf (out, _("Report bugs to: %s\n"), PACKAGE_BUGREPORT);
+  emit_bug_reporting_address();
   /* Don't output this redundant message for English locales.
      Note we still output for 'C' so that it gets included in the man page.  */
   if (lc_messages && STRNCMP_LIT (lc_messages, "en_"))
@@ -160,38 +166,5 @@ print_help (FILE *restrict out)
       fprintf (out, _("Report %s translation bugs to "
 		"<https://translationproject.org/team/>\n"), PACKAGE_NAME);
     }
-#ifdef PACKAGE_PACKAGER_BUG_REPORTS
-  fprintf (out, _("Report %s bugs to: %s\n"), PACKAGE_PACKAGER,
-	  PACKAGE_PACKAGER_BUG_REPORTS);
-#endif
-#ifdef PACKAGE_URL
-  fprintf (out, _("%s home page: <%s>\n"), PACKAGE_NAME, PACKAGE_URL);
-#else
-  fprintf (out, _("%s home page: <https://www.gnu.org/software/%s/>\n"),
-	  PACKAGE_NAME, PACKAGE);
-#endif
-  fputs (_("General help using GNU software: <https://www.gnu.org/gethelp/>\n"),
-	 out);
   exit(out == stderr ? EXIT_FAILURE : EXIT_SUCCESS);
-}
-
-
-
-/* Print version and copyright information.  */
-
-static void
-print_version (void)
-{
-  printf ("%s (%s) %s\n", PACKAGE, PACKAGE_NAME, VERSION);
-  /* xgettext: no-wrap */
-  puts ("");
-
-  /* It is important to separate the year from the rest of the message,
-     as done here, to avoid having to retranslate the message when a new
-     year comes around.  */
-  printf (_("\
-Copyright (C) %d Free Software Foundation, Inc.\n\
-License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n"), COPYRIGHT_YEAR);
 }

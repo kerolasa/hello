@@ -43,6 +43,7 @@ localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 CLEANFILES =
+MAINTAINERCLEANFILES =
 
 if !GIT_CROSS_COMPILING
 man_MANS = hello.1
