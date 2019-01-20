@@ -79,16 +79,11 @@ print_help (FILE *restrict out)
   exit(out == stderr ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-int
-main (int argc, char *argv[])
+void
+parse_options (int argc, char *argv[], const char **greeting_msg)
 {
   int optc;
   int lose = 0;
-  const char *greeting_msg;
-  wchar_t *mb_greeting;
-  mbstate_t mbstate = { 0, };
-  size_t len;
-
   enum {
     OPT_HELP = CHAR_MAX + 1,
     OPT_VERSION
@@ -100,6 +95,45 @@ main (int argc, char *argv[])
     {"version", no_argument, NULL, OPT_VERSION},
     {NULL, 0, NULL, 0}
   };
+
+  while ((optc = getopt_long (argc, argv, "g:t", longopts, NULL)) != -1)
+    switch (optc)
+      {
+	/* --help and --version exit immediately, per GNU coding standards.  */
+      case OPT_VERSION:
+	version_etc (stdout, PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION, AUTHORS, (char *) NULL);
+	exit (EXIT_SUCCESS);
+	break;
+      case 'g':
+	*greeting_msg = optarg;
+	break;
+      case OPT_HELP:
+	print_help (stdout);
+      case 't':
+	*greeting_msg = _("hello, world");
+	break;
+      default:
+	lose = 1;
+	break;
+      }
+
+  if (lose || optind < argc)
+    {
+      /* Print error message and exit.  */
+      if (argv[optind])
+        error (0, 0, "%s: %s", _("extra operand"), argv[optind]);
+      emit_try_help ();
+      exit (EXIT_FAILURE);
+    }
+}
+
+int
+main (int argc, char *argv[])
+{
+  const char *greeting_msg;
+  wchar_t *mb_greeting;
+  mbstate_t mbstate = { 0, };
+  size_t len;
 
   set_program_name (argv[0]);
 
@@ -121,35 +155,7 @@ main (int argc, char *argv[])
      This is implemented in the Gnulib module "closeout".  */
   atexit (close_stdout);
 
-  while ((optc = getopt_long (argc, argv, "g:t", longopts, NULL)) != -1)
-    switch (optc)
-      {
-	/* --help and --version exit immediately, per GNU coding standards.  */
-      case OPT_VERSION:
-	version_etc (stdout, PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION, AUTHORS, (char *) NULL);
-	exit (EXIT_SUCCESS);
-	break;
-      case 'g':
-	greeting_msg = optarg;
-	break;
-      case OPT_HELP:
-	print_help (stdout);
-      case 't':
-	greeting_msg = _("hello, world");
-	break;
-      default:
-	lose = 1;
-	break;
-      }
-
-  if (lose || optind < argc)
-    {
-      /* Print error message and exit.  */
-      if (argv[optind])
-        error (0, 0, "%s: %s", _("extra operand"), argv[optind]);
-      emit_try_help ();
-      exit (EXIT_FAILURE);
-    }
+  parse_options(argc, argv, &greeting_msg);
 
   len = strlen(greeting_msg) + 1;
   mb_greeting = xmalloc(len * sizeof(wchar_t));
