@@ -43,9 +43,41 @@
   proper_name ("Jim Meyering"), \
   proper_name ("Reuben Thomas")
 
-/* Forward declarations.  */
-static _Noreturn void print_help (FILE *restrict out);
-static void print_version (void);
+/* Print help info.  This long message is split into
+   several pieces to help translators be able to align different
+   blocks and identify the various pieces.  */
+static _Noreturn void
+print_help (FILE *restrict out)
+{
+  const char *lc_messages = setlocale (LC_MESSAGES, NULL);
+  /* TRANSLATORS: --help output 1 (synopsis)
+     no-wrap */
+  fprintf (out, _("Usage: %s [OPTION]...\n"), program_name);
+  /* TRANSLATORS: --help output 2 (brief description)
+     no-wrap */
+  fputs (_("Print a friendly, customizable greeting.\n"), out);
+  fputs ("\n", out);
+  /* TRANSLATORS: --help output 3: options
+     no-wrap */
+  fputs (_("  -t, --traditional       use traditional greeting\n"), out);
+  fputs (_("  -g, --greeting=TEXT     use TEXT as the greeting message\n"), out);
+  fputs ("\n", out);
+  fputs (_("      --help     display this help and exit\n"), out);
+  fputs (_("      --version  output version information and exit\n"), out);
+  emit_bug_reporting_address();
+  /* Don't output this redundant message for English locales.
+     Note we still output for 'C' so that it gets included in the man page.  */
+  if (lc_messages && STRNCMP_LIT (lc_messages, "en_"))
+    {
+      /* TRANSLATORS: Replace LANG_CODE in this URL with your language code
+	 <https://translationproject.org/team/LANG_CODE.html> to form one of
+	 the URLs at https://translationproject.org/team/.  Otherwise, replace
+	 the entire URL with your translation team's email address.  */
+      fprintf (out, _("Report %s translation bugs to "
+		"<https://translationproject.org/team/>\n"), PACKAGE_NAME);
+    }
+  exit(out == stderr ? EXIT_FAILURE : EXIT_SUCCESS);
+}
 
 int
 main (int argc, char *argv[])
@@ -130,42 +162,4 @@ main (int argc, char *argv[])
   free(mb_greeting);
 
   exit (EXIT_SUCCESS);
-}
-
-
-/* Print help info.  This long message is split into
-   several pieces to help translators be able to align different
-   blocks and identify the various pieces.  */
-
-static _Noreturn void
-print_help (FILE *restrict out)
-{
-  const char *lc_messages = setlocale (LC_MESSAGES, NULL);
-  /* TRANSLATORS: --help output 1 (synopsis)
-     no-wrap */
-  fprintf (out, _("Usage: %s [OPTION]...\n"), program_name);
-  /* TRANSLATORS: --help output 2 (brief description)
-     no-wrap */
-  fputs (_("Print a friendly, customizable greeting.\n"), out);
-  fputs ("\n", out);
-  /* TRANSLATORS: --help output 3: options
-     no-wrap */
-  fputs (_("  -t, --traditional       use traditional greeting\n"), out);
-  fputs (_("  -g, --greeting=TEXT     use TEXT as the greeting message\n"), out);
-  fputs ("\n", out);
-  fputs (_("      --help     display this help and exit\n"), out);
-  fputs (_("      --version  output version information and exit\n"), out);
-  emit_bug_reporting_address();
-  /* Don't output this redundant message for English locales.
-     Note we still output for 'C' so that it gets included in the man page.  */
-  if (lc_messages && STRNCMP_LIT (lc_messages, "en_"))
-    {
-      /* TRANSLATORS: Replace LANG_CODE in this URL with your language code
-	 <https://translationproject.org/team/LANG_CODE.html> to form one of
-	 the URLs at https://translationproject.org/team/.  Otherwise, replace
-	 the entire URL with your translation team's email address.  */
-      fprintf (out, _("Report %s translation bugs to "
-		"<https://translationproject.org/team/>\n"), PACKAGE_NAME);
-    }
-  exit(out == stderr ? EXIT_FAILURE : EXIT_SUCCESS);
 }
