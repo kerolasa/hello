@@ -60,11 +60,13 @@ CLEANFILES += $(man_MANS)
 endif
 
 TESTS = \
+	tests/atexit-1 \
 	tests/greeting-1 \
 	tests/greeting-2 \
 	tests/hello-1 \
 	tests/last-1 \
 	tests/multibyte-1 \
+	tests/operand-1 \
 	tests/traditional-1
 
 EXTRA_DIST += $(TESTS)
