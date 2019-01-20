@@ -1,0 +1,38 @@
+#! /bin/sh
+# Test multibyte --greeting.
+#
+# Copyright (C) 2019 Free Software Foundation, Inc.
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.
+
+trap 'rm -fr $tmpfiles' 1 2 3 15
+
+# Cause multibyte conversion failure.
+LANGUAGE=
+LC_ALL=C
+LC_MESSAGES=
+LANG=
+export LANGUAGE LC_ALL LC_MESSAGES LANG
+
+tmpfiles="multibyte-test1.ok"
+cat <<EOF >multibyte-test1.ok
+hello: conversion to a multibyte string failed: Invalid or incomplete multibyte or wide character
+EOF
+
+tmpfiles="$tmpfiles multibyte-test1.out"
+: ${HELLO=hello}
+${HELLO} -g 'hello 世界' 2>&1 | tr -d '\r' >multibyte-test1.out
+
+# remove \r (CR) characters from the output, so that the tests work on
+# platforms with CRLF line endings.  There is apparently no reliable
+# method (across Cygwin, MingW, etc.) to force an eol style.
+
+: ${DIFF=diff}
+${DIFF} multibyte-test1.ok multibyte-test1.out
+result=$?
+
+rm -fr $tmpfiles
+
+exit $result

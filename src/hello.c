@@ -54,6 +54,7 @@ main (int argc, char *argv[])
   int lose = 0;
   const char *greeting_msg;
   wchar_t *mb_greeting;
+  mbstate_t mbstate = { 0, };
   size_t len;
 
   enum {
@@ -118,11 +119,11 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
-  len = mbsrtowcs(NULL, &greeting_msg, 0, NULL);
+  len = strlen(greeting_msg) + 1;
+  mb_greeting = xmalloc(len * sizeof(wchar_t));
+  len = mbsrtowcs(mb_greeting, &greeting_msg, len, &mbstate);
   if (len == (size_t)-1)
     error (EXIT_FAILURE, errno, _("conversion to a multibyte string failed"));
-  mb_greeting = xmalloc((len + 1) * sizeof(wchar_t));
-  mbsrtowcs(mb_greeting, &greeting_msg, len + 1, NULL);
 
   /* Print greeting message and exit. */
   wprintf (L"%ls\n", mb_greeting);
