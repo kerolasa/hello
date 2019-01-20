@@ -101,8 +101,10 @@ main (int argc, char *argv[])
   if (lose || optind < argc)
     {
       /* Print error message and exit.  */
-      error (0, 0, "%s: %s", _("extra operand"), argv[optind]);
-      print_help (stderr);
+      if (argv[optind])
+        error (0, 0, "%s: %s", _("extra operand"), argv[optind]);
+      emit_try_help ();
+      exit (EXIT_FAILURE);
     }
 
   len = mbsrtowcs(NULL, &greeting_msg, 0, NULL);

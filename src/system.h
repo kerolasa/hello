@@ -47,4 +47,16 @@
 #define STRNCMP_LIT(s, literal) \
   strncmp (s, "" literal "", sizeof (literal) - 1)
 
+/* Use a macro rather than an inline function, as this references
+   the global program_name, which causes dynamic linking issues
+   in libstdbuf.so on some systems where unused functions
+   are not removed by the linker.  */
+#define emit_try_help() \
+  do \
+    { \
+      fprintf (stderr, _("Try '%s --help' for more information.\n"), \
+               program_name); \
+    } \
+  while (0)
+
 #endif /* HELLO_SYSTEM_H */
