@@ -79,7 +79,7 @@ print_help (FILE *restrict out)
   exit(out == stderr ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-void
+static void
 parse_options (int argc, char *argv[], const char **greeting_msg)
 {
   int optc;
@@ -103,7 +103,6 @@ parse_options (int argc, char *argv[], const char **greeting_msg)
       case OPT_VERSION:
 	version_etc (stdout, PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION, AUTHORS, (char *) NULL);
 	exit (EXIT_SUCCESS);
-	break;
       case 'g':
 	*greeting_msg = optarg;
 	break;
